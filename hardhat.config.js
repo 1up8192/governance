@@ -1,6 +1,12 @@
 require("@nomiclabs/hardhat-waffle");
 require("@nomiclabs/hardhat-ethers");
+require('dotenv').config();
 
+const Secrets = {
+  mnemonic: process.env.MNEMONIC,
+  infuraProjectId: process.env.INFURA_PROJECT_ID,
+  mainnetMnemonic: undefined,
+};
 
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
@@ -35,11 +41,27 @@ task("Deploy", "Deploys a COMPound style governance system")
  * @type import('hardhat/config').HardhatUserConfig
  */
 module.exports = {
+  defaultNetwork: "ganache",
   networks: {
-    /* rinkeby: {
-      url: "https://rinkeby.infura.io/v3/<<Your infura Key>>",
-      accounts: ["0xAPrivateKey"]
-    } */
+
+    hardhat: {
+    },
+    ganache: {
+      url: "http://127.0.0.1:9545",
+      accounts: {
+        mnemonic: Secrets.mnemonic,
+        initialIndex: 0,
+        count: 10,
+      }
+    },
+    ropsten: {
+      url: `https://ropsten.infura.io/v3/${Secrets.infuraProjectId}`,
+      accounts: {
+        mnemonic: Secrets.mnemonic,
+        initialIndex: 0,
+        count: 10,
+      }
+    }
   },
   solidity: "0.5.16",
 };
