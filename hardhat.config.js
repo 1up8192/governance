@@ -41,7 +41,7 @@ task("Deploy", "Deploys a COMPound style governance system")
       guardian = accounts[0].address;
     }
 
-    console.log(tokenRecipient)
+    console.log("token recipient: ", tokenRecipient)
 
     await deploy({
       tokenRecipient: tokenRecipient,
