@@ -7,20 +7,6 @@ async function main({tokenRecipient, timeLockAdmin, guardian}) {
     // Compile our Contracts, just in case
     await hre.run('compile');
 
-    if(tokenRecipient == null){
-        tokenRecipient = (await ethers.getSigners())[0].address;
-    }
-
-    if(timeLockAdmin == null){
-        timeLockAdmin = (await ethers.getSigners())[0].address;
-    }
-
-    if(guardian == null){
-        guardian = (await ethers.getSigners())[0].address;
-    }
-
-    console.log(tokenRecipient)
-
     // This gets the contract from 
     const Token = await ethers.getContractFactory("USF");
     const token = await Token.deploy(tokenRecipient);

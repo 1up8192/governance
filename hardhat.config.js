@@ -19,19 +19,37 @@ task("accounts", "Prints the list of accounts", async () => {
 });
 
 task("Deploy", "Deploys a COMPound style governance system")
-.addParam("token", "The address to receive the initial supply")
-.addParam("timelock", "The timelock administrator")
-.addParam("guardian", "The governor guardian").setAction(async taskArgs => {
-    
-  const { deploy } = require("./scripts/Deploy");
+  .addOptionalParam("token", "The address to receive the initial supply")
+  .addOptionalParam("timelock", "The timelock administrator")
+  .addOptionalParam("guardian", "The governor guardian").setAction(async taskArgs => {
+
+    const { deploy } = require("./scripts/Deploy");
+
+    const accounts = await ethers.getSigners();
+
+    let tokenRecipient = taskArgs.token;
+    let timeLockAdmin = taskArgs.timelock;
+    let guardian = taskArgs.guardian;
+
+    if (tokenRecipient == null) {
+      tokenRecipient = accounts[0].address;
+    }
+    if (timeLockAdmin == null) {
+      timeLockAdmin = accounts[0].address;
+    }
+    if (guardian == null) {
+      guardian = accounts[0].address;
+    }
+
+    console.log(tokenRecipient)
 
     await deploy({
-      tokenRecipient: taskArgs.token,
-      timeLockAdmin: taskArgs.timelock,
-      guardian: taskArgs.guardian
+      tokenRecipient: tokenRecipient,
+      timeLockAdmin: timeLockAdmin,
+      guardian: guardian
     });
 
-})
+  })
 
 
 // You need to export an object to set up your config
