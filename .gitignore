@@ -1,5 +1,7 @@
 node_modules
 
+ContractAddresses.json
+
 #Hardhat files
 cache
 artifacts

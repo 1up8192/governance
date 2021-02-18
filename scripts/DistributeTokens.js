@@ -2,7 +2,7 @@
 const hre = require("hardhat");
 const ethers = hre.ethers;
 const web3 = hre.web3;
-const contractAddress = require("../artifacts/ContractAddresses.json");
+const contractAddress = require("../ContractAddresses.json");
 const BigNumber = ethers.BigNumber;
 // const USF = artifacts.require("USF");
 
@@ -34,6 +34,13 @@ async function main() {
         index++;
     }
 }
+
+main()
+  .then(() => process.exit(0))
+  .catch(error => {
+    console.error(error);
+    process.exit(1);
+  });
 
 module.exports = {
     distributeTokens: main

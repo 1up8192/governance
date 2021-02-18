@@ -8,7 +8,7 @@ async function main({ tokenRecipient, timeLockAdmin, guardian }) {
     await hre.run('compile');
 
     const accounts = await ethers.getSigners();
-    
+
     if (tokenRecipient == null) {
         tokenRecipient = accounts[0].address;
     }
@@ -54,18 +54,18 @@ async function main({ tokenRecipient, timeLockAdmin, guardian }) {
 async function saveAddress(name, contract) {
     const fs = require("fs");
 
-    contractAddressesFile = "./artifacts/ContractAddresses.json";
+    contractAddressesFile = "./ContractAddresses.json";
 
     if (!fs.existsSync(contractAddressesFile)) {
         fs.writeFileSync(
-            "./artifacts/ContractAddresses.json",
+            "./ContractAddresses.json",
             JSON.stringify({ [name]: contract.address }, undefined, 2)
         );
     } else {
         const addresses = JSON.parse(fs.readFileSync(contractAddressesFile));
         addresses[name] = contract.address;
         fs.writeFileSync(
-            "./artifacts/ContractAddresses.json",
+            "./ContractAddresses.json",
             JSON.stringify(addresses, undefined, 2)
         );
     }
