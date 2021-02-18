@@ -1,5 +1,7 @@
 require("@nomiclabs/hardhat-waffle");
 require("@nomiclabs/hardhat-ethers");
+require("@nomiclabs/hardhat-truffle5");
+require("@nomiclabs/hardhat-web3");
 require('dotenv').config();
 
 const Secrets = {
@@ -18,37 +20,29 @@ task("accounts", "Prints the list of accounts", async () => {
   }
 });
 
-task("Deploy", "Deploys a COMPound style governance system")
+task("accountsWeb3", "Prints accounts", async (_, { web3 }) => {
+  console.log(await web3.eth.getAccounts());
+});
+
+task("deploy", "Deploys a COMPound style governance system")
   .addOptionalParam("token", "The address to receive the initial supply")
   .addOptionalParam("timelock", "The timelock administrator")
   .addOptionalParam("guardian", "The governor guardian").setAction(async taskArgs => {
 
     const { deploy } = require("./scripts/Deploy");
 
-    const accounts = await ethers.getSigners();
-
-    let tokenRecipient = taskArgs.token;
-    let timeLockAdmin = taskArgs.timelock;
-    let guardian = taskArgs.guardian;
-
-    if (tokenRecipient == null) {
-      tokenRecipient = accounts[0].address;
-    }
-    if (timeLockAdmin == null) {
-      timeLockAdmin = accounts[0].address;
-    }
-    if (guardian == null) {
-      guardian = accounts[0].address;
-    }
-
-    console.log("token recipient: ", tokenRecipient)
 
     await deploy({
-      tokenRecipient: tokenRecipient,
-      timeLockAdmin: timeLockAdmin,
-      guardian: guardian
+      tokenRecipient: taskArgs.token,
+      timeLockAdmin: taskArgs.timelock,
+      guardian: taskArgs.guardian
     });
 
+  })
+
+task("distributeTokens", "", async () => {
+    const { distributeTokens } = require("./scripts/DistributeTokens");
+    await distributeTokens();
   })
 
 
