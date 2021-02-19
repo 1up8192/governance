@@ -16,10 +16,6 @@ async function main() {
     const bob = addresses[2];
     const cecile = addresses[3];
 
-    for (i = 0; i < 10; i++) {
-        await advanceBlock();        
-    } 
-
     const gov = await ethers.getContractAt("GovernorAlpha", contractAddress.GovernorAlpha);
     const govWithSigner = gov.connect(accounts[0]);
     let tx;
@@ -30,11 +26,8 @@ async function main() {
         [0x0],
         "dummy proposal"
     );
-    console.log("tx before mining: ");
-    console.log(tx);
     await tx.wait();
-    console.log("tx after mining: ");
-    console.log(tx);
+    console.log((await gov.queryFilter("ProposalCreated"))[0].args)
 }
 
 main()

@@ -11,27 +11,35 @@ async function main() {
     const accounts = await ethers.getSigners();
     const addresses = accounts.map(account => account.address);
 
-    const ownerAccount = accounts[0];
-    const owner = addresses[0];
-    const alice = addresses[1];
-    const bob = addresses[2];
-    const cecile = addresses[3];
-
     const usf = await ethers.getContractAt("USF", contractAddress.USF);
-    const usfWithSigner = usf.connect(accounts[0]);
+    const usfWithSigner0 = usf.connect(accounts[0]);
     let tx;
-    tx = await usfWithSigner.transfer(alice, ethers.utils.parseEther("350000"));
+    tx = await usfWithSigner0.delegate(addresses[0]);
     await tx.wait();
-    tx = await usfWithSigner.transfer(bob, ethers.utils.parseEther("200000"));
+    
+    tx = await usfWithSigner0.transfer(addresses[1], ethers.utils.parseEther("350000"));
     await tx.wait();
-    tx = await usfWithSigner.transfer(cecile, ethers.utils.parseEther("50000"));
+    const usfWithSigner1 = usf.connect(accounts[1]);
+    tx = await usfWithSigner1.delegate(addresses[1]);
     await tx.wait();
+    
+    tx = await usfWithSigner0.transfer(addresses[2], ethers.utils.parseEther("200000"));
+    await tx.wait();
+    const usfWithSigner2 = usf.connect(accounts[2]);
+    tx = await usfWithSigner2.delegate(addresses[2]);
+    await tx.wait();
+    
+    tx = await usfWithSigner0.transfer(addresses[3], ethers.utils.parseEther("50000"));
+    await tx.wait();
+    const usfWithSigner3 = usf.connect(accounts[3]);
+    tx = await usfWithSigner3.delegate(addresses[3]);
+    await tx.wait();
+
     let index = 0;
     for await (let balance of addresses.slice(0, 4).map(async address => usf.balanceOf(address))) {
         console.log(`account ${index} balance: ${balance}`)
         index++;
     }
-    await advanceBlock();        
     index = 0;
     for await (let votes of addresses.slice(0, 4).map(async address => usf.getCurrentVotes(address))) {
         console.log(`account ${index} votes: ${votes}`)
