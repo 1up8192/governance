@@ -43,9 +43,18 @@ async function main({ tokenRecipient, timeLockAdmin, guardian }) {
     await gov.deployTransaction.wait();
     saveAddress("GovernorAlpha", gov)
 
+     // Deploy Governable
+     const Govable = await ethers.getContractFactory("Governable");
+     const govable = await Govable.deploy(gov.address);
+     await govable.deployed();
+     await govable.deployTransaction.wait();
+     saveAddress("Governable", govable)
+
+
     console.log(`Token deployed to: ${token.address}`);
     console.log(`TimeLock deployed to: ${timelock.address}`);
     console.log(`GovernorAlpha deployed to: ${gov.address}`)
+    console.log(`Governable deployed to: ${govable.address}`)
 
     const initialBalance = await token.balanceOf(tokenRecipient);
     console.log(`${initialBalance / 1e18} tokens transfered to ${tokenRecipient}`);
