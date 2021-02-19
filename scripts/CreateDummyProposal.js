@@ -16,7 +16,9 @@ async function main() {
     const bob = addresses[2];
     const cecile = addresses[3];
 
-    await advanceBlock();
+    for (i = 0; i < 10; i++) {
+        await advanceBlock();        
+    } 
 
     const gov = await ethers.getContractAt("GovernorAlpha", contractAddress.GovernorAlpha);
     const govWithSigner = gov.connect(accounts[0]);

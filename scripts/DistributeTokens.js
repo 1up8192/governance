@@ -4,9 +4,7 @@ const ethers = hre.ethers;
 const web3 = hre.web3;
 const contractAddress = require("../ContractAddresses.json");
 const BigNumber = ethers.BigNumber;
-// const USF = artifacts.require("USF");
-
-
+const { days, advanceTime, advanceBlock, advanceTimeAndBlock } = require('./utils/TimeTravel');
 
 async function main() {
 
@@ -31,6 +29,12 @@ async function main() {
     let index = 0;
     for await (let balance of addresses.slice(0, 4).map(async address => usf.balanceOf(address))) {
         console.log(`account ${index} balance: ${balance}`)
+        index++;
+    }
+    await advanceBlock();        
+    index = 0;
+    for await (let votes of addresses.slice(0, 4).map(async address => usf.getCurrentVotes(address))) {
+        console.log(`account ${index} votes: ${votes}`)
         index++;
     }
 }
