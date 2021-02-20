@@ -75,8 +75,9 @@ async function main() {
     console.log("accpunt 1 voted yes");
     console.log(`proposal state: ${await getProposalState(gov, proposalId)}`);
 
-    const govWithSigner2 = gov.connect(accounts[2]);
-    tx = await govWithSigner2.castVote(proposalId, true);
+    //delegated vote
+    const govWithSigner4 = gov.connect(accounts[4]);
+    tx = await govWithSigner4.castVote(proposalId, true);
     await tx.wait();
     console.log("accpunt 2 voted yes");
     console.log(`proposal state: ${await getProposalState(gov, proposalId)}`);

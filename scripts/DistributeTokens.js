@@ -23,25 +23,26 @@ async function main() {
     tx = await usfWithSigner1.delegate(addresses[1]);
     await tx.wait();
     
-    tx = await usfWithSigner0.transfer(addresses[2], ethers.utils.parseEther("200000"));
+    tx = await usfWithSigner0.transfer(addresses[2], ethers.utils.parseEther("50000"));
     await tx.wait();
     const usfWithSigner2 = usf.connect(accounts[2]);
     tx = await usfWithSigner2.delegate(addresses[2]);
     await tx.wait();
     
-    tx = await usfWithSigner0.transfer(addresses[3], ethers.utils.parseEther("50000"));
+    tx = await usfWithSigner0.transfer(addresses[3], ethers.utils.parseEther("200000"));
     await tx.wait();
     const usfWithSigner3 = usf.connect(accounts[3]);
-    tx = await usfWithSigner3.delegate(addresses[3]);
+    //actually delegates to a different account
+    tx = await usfWithSigner3.delegate(addresses[4]);
     await tx.wait();
 
     let index = 0;
-    for await (let balance of addresses.slice(0, 4).map(async address => usf.balanceOf(address))) {
+    for await (let balance of addresses.slice(0, 5).map(async address => usf.balanceOf(address))) {
         console.log(`account ${index} balance: ${balance}`)
         index++;
     }
     index = 0;
-    for await (let votes of addresses.slice(0, 4).map(async address => usf.getCurrentVotes(address))) {
+    for await (let votes of addresses.slice(0, 5).map(async address => usf.getCurrentVotes(address))) {
         console.log(`account ${index} votes: ${votes}`)
         index++;
     }
