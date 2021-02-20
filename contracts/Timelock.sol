@@ -182,7 +182,7 @@ contract Timelock {
     event QueueTransaction(bytes32 indexed txHash, address indexed target, uint value, string signature, bytes data, uint eta);
 
     uint public constant GRACE_PERIOD = 14 days;
-    uint public constant MINIMUM_DELAY = 2 days;
+    uint public constant MINIMUM_DELAY = 0;// FIXME just for testing 2 days;
     uint public constant MAXIMUM_DELAY = 30 days;
 
     address public admin;
@@ -224,6 +224,13 @@ contract Timelock {
         pendingAdmin = pendingAdmin_;
 
         emit NewPendingAdmin(pendingAdmin);
+    }
+
+    // FIXME for testing, and because I dont understand how the original should work
+    function setAdmin(address newAdmin) public {
+        require(msg.sender == admin, "Timelock::setPendingAdmin: Call must come from admin.");
+        admin = newAdmin;
+        emit NewAdmin(admin);
     }
 
     function queueTransaction(address target, uint value, string memory signature, bytes memory data, uint eta) public returns (bytes32) {

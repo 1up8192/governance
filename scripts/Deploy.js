@@ -29,7 +29,7 @@ async function main({ tokenRecipient, timeLockAdmin, guardian }) {
     saveAddress("USF", token)
 
     // Deploy Timelock
-    const delay = 172800;
+    const delay = 1; /* FIXME for testing 17280; */ // ~3 days in blocks (assuming 15s blocks);
     const Timelock = await ethers.getContractFactory("Timelock");
     const timelock = await Timelock.deploy(timeLockAdmin, delay);
     await timelock.deployed();
@@ -42,6 +42,11 @@ async function main({ tokenRecipient, timeLockAdmin, guardian }) {
     await gov.deployed();
     await gov.deployTransaction.wait();
     saveAddress("GovernorAlpha", gov)
+
+    // set Timelock admin to Governance contract address
+    const timelockWithSigner0 = timelock.connect(accounts[0]);
+    let tx = await timelockWithSigner0.setAdmin(gov.address);
+    await tx.wait();
 
      // Deploy Governable
      const Govable = await ethers.getContractFactory("Governable");

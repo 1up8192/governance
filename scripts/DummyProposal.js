@@ -90,6 +90,8 @@ async function main() {
     console.log("proposal queued");
     console.log(`proposal state: ${await getProposalState(gov, proposalId)}`);
 
+    await advanceBlock();
+
     tx = await govWithSigner0.execute(proposalId);
     await tx.wait();
     console.log("proposal executed");
