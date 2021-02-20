@@ -227,10 +227,11 @@ contract Timelock {
     }
 
     // FIXME for testing, and because I dont understand how the original should work
-    function setAdmin(address newAdmin) public {
+    function setPendingAdmin2(address pendingAdmin_) public {
         require(msg.sender == admin, "Timelock::setPendingAdmin: Call must come from admin.");
-        admin = newAdmin;
-        emit NewAdmin(admin);
+        pendingAdmin = pendingAdmin_;
+
+        emit NewPendingAdmin(pendingAdmin);
     }
 
     function queueTransaction(address target, uint value, string memory signature, bytes memory data, uint eta) public returns (bytes32) {

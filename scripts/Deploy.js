@@ -43,9 +43,13 @@ async function main({ tokenRecipient, timeLockAdmin, guardian }) {
     await gov.deployTransaction.wait();
     saveAddress("GovernorAlpha", gov)
 
+    let tx;
     // set Timelock admin to Governance contract address
     const timelockWithSigner0 = timelock.connect(accounts[0]);
-    let tx = await timelockWithSigner0.setAdmin(gov.address);
+    tx = await timelockWithSigner0.setPendingAdmin2(gov.address);
+    await tx.wait();
+    const govWithSigner0 = gov.connect(accounts[0]);
+    tx = await govWithSigner0.__acceptAdmin();
     await tx.wait();
 
      // Deploy Governable
