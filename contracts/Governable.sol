@@ -17,4 +17,9 @@ contract Governable {
     function getX() external view returns (uint256) {
       return _x;
     }
+
+    // this is a bit silly, but just for ease of testing
+    function setOwner(address owner) external returns (uint256) {
+      _owner = owner;
+    }
 }

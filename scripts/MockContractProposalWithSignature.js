@@ -17,16 +17,28 @@ async function main() {
     const bob = addresses[2];
     const cecile = addresses[3];
 
+    const governable = await ethers.getContractAt("Governable", contractAddress.Governable);
+    const xValue = await governable.getX();
+
+    //todo change owner of governable and signature stuff
+
+    const calldata = governable.interface.encodeFunctionData("setX", [xValue.add(1)]);
+
+    console.log(`governable value before proposal executed: ${xValue.toString()}, expected value to be set: ${xValue.add(1).toString()}`);
+    console.log("calldata:", calldata);
+    
+
     const gov = await ethers.getContractAt("GovernorAlpha", contractAddress.GovernorAlpha);
     const govWithSigner0 = gov.connect(accounts[0]);
     let tx;
     tx = await govWithSigner0.propose(
-        ["0x0000000000000000000000000000000000000000"],
+        [governable.address],
         [0],
         [""],
-        [0x0],
-        "dummy proposal"
+        [calldata],
+        "mock contract proposal"
     );
+
     await tx.wait();
     const events = await gov.queryFilter("ProposalCreated");
     const proposalId = events[events.length - 1].args.id;
@@ -57,14 +69,22 @@ async function main() {
     console.log("proposal queued");
     console.log(`proposal state: ${await getProposalState(gov, proposalId)}`);
 
-    for (let index = 0; index < 20; index++) {
+    for (let index = 0; index < 100; index++) {
         await advanceBlock();
     }
 
-    tx = await govWithSigner0.execute(proposalId);
+    tx = await govWithSigner0.execute(proposalId, { gasLimit: 500000 });
     await tx.wait();
     console.log("proposal executed");
     console.log(`proposal state: ${await getProposalState(gov, proposalId)}`);
+
+    const xValue2 = await governable.getX();
+
+    console.log(`governable value after proposal executed: ${xValue2.toString()}`);
+    
+    //todo change owner of governable back
+
+
 
 }
 

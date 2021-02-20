@@ -54,7 +54,7 @@ async function main({ tokenRecipient, timeLockAdmin, guardian }) {
 
      // Deploy Governable
      const Govable = await ethers.getContractFactory("Governable");
-     const govable = await Govable.deploy(gov.address);
+     const govable = await Govable.deploy(timelock.address);
      await govable.deployed();
      await govable.deployTransaction.wait();
      saveAddress("Governable", govable)
