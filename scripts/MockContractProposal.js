@@ -67,9 +67,7 @@ async function main() {
     console.log("proposal queued");
     console.log(`proposal state: ${await getProposalState(gov, proposalId)}`);
 
-    for (let index = 0; index < 100; index++) {
-        await advanceBlock();
-    }
+    advanceTimeAndBlock(3 * days);
 
     tx = await govWithSigner0.execute(proposalId, { gasLimit: 500000 });
     await tx.wait();

@@ -1,6 +1,7 @@
 
 const hre = require("hardhat");
 const ethers = hre.ethers;
+const { days, advanceTime, advanceBlock, advanceTimeAndBlock } = require('./utils/TimeTravel');
 
 async function main({ tokenRecipient, timeLockAdmin, guardian }) {
 
@@ -29,7 +30,7 @@ async function main({ tokenRecipient, timeLockAdmin, guardian }) {
     saveAddress("USF", token)
 
     // Deploy Timelock
-    const delay = 1; /* FIXME for testing 17280; */ // ~3 days in blocks (assuming 15s blocks);
+    const delay = 2 * days;
     const Timelock = await ethers.getContractFactory("Timelock");
     const timelock = await Timelock.deploy(timeLockAdmin, delay);
     await timelock.deployed();
@@ -42,15 +43,6 @@ async function main({ tokenRecipient, timeLockAdmin, guardian }) {
     await gov.deployed();
     await gov.deployTransaction.wait();
     saveAddress("GovernorAlpha", gov)
-
-    let tx;
-    // set Timelock admin to Governance contract address
-    const timelockWithSigner0 = timelock.connect(accounts[0]);
-    tx = await timelockWithSigner0.setPendingAdmin2(gov.address);
-    await tx.wait();
-    const govWithSigner0 = gov.connect(accounts[0]);
-    tx = await govWithSigner0.__acceptAdmin();
-    await tx.wait();
 
      // Deploy Governable
      const Govable = await ethers.getContractFactory("Governable");
