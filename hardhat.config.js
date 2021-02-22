@@ -29,19 +29,19 @@ task("deploy", "Deploys a COMPound style governance system")
   .addOptionalParam("timelock", "The timelock administrator")
   .addOptionalParam("guardian", "The governor guardian").setAction(async taskArgs => {
 
-    const { deploy } = require("./scripts/Deploy");
-    const { setTimelockAdmin } = require("./scripts/SetTimelockAdmin");
-    const { distributeTokens } = require("./scripts/DistributeTokens");
-
+    
     console.log("=== CONTRACT DEPLOYMENTS ===")
+    const { deploy } = require("./scripts/Deploy");
     await deploy({
       tokenRecipient: taskArgs.token,
       timeLockAdmin: taskArgs.timelock,
       guardian: taskArgs.guardian
     });
     console.log("=== TIMELOCK ADMIN SETUP ===")
+    const { setTimelockAdmin } = require("./scripts/SetTimelockAdmin");
     await setTimelockAdmin();
     console.log("=== TOKEN DISTRIBUTION ===")
+    const { distributeTokens } = require("./scripts/DistributeTokens");
     await distributeTokens();
 
   })
