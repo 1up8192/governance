@@ -5,9 +5,6 @@ const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000"
 
 async function main() {
 
-    // Compile our Contracts, just in case
-    await hre.run('compile');
-
     const accounts = await ethers.getSigners();
 
     // Deploy GnosisSafe
@@ -32,9 +29,10 @@ async function main() {
 
     const safeWithSigner0 = safe.connect(accounts[0]);
 
+    const contractAddresses = require("../ContractAddresses.json");
 
     await safeWithSigner0.setup(
-        [accounts[0].address, accounts[1].address, accounts[2].address], // _owners List of Safe owners
+        [accounts[0].address, accounts[1].address, contractAddresses.Timelock], // _owners List of Safe owners
         2, // _threshold Number of required confirmations for a Safe transaction.
         ZERO_ADDRESS, // to Contract address for optional delegate call
         "0x", // data Data payload for optional delegate call
@@ -50,9 +48,13 @@ async function main() {
     //console.log(`${initialBalance / 1e18} tokens transfered to ${tokenRecipient}`);
 }
 
-main()
+/* main()
     .then(() => process.exit(0))
     .catch(error => {
         console.error(error);
         process.exit(1);
-    });
+    }); */
+
+module.exports = {
+    deploySafe: main
+}

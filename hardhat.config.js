@@ -40,6 +40,9 @@ task("deploy", "Deploys a COMPound style governance system")
     console.log("=== TIMELOCK ADMIN SETUP ===")
     const { setTimelockAdmin } = require("./scripts/SetTimelockAdmin");
     await setTimelockAdmin();
+    console.log("=== DEPLOY SAFE ===")
+    const { deploySafe } = require("./scripts/DeploySafe");
+    await deploySafe();
     console.log("=== TOKEN DISTRIBUTION ===")
     const { distributeTokens } = require("./scripts/DistributeTokens");
     await distributeTokens();
