@@ -18,7 +18,7 @@ async function main() {
 
     const proxyFactoryWithSigner0 = proxyFactory.connect(accounts[0]);
 
-    await proxyFactoryWithSigner0.createProxy(masterCopy.address, 0x0);
+    await proxyFactoryWithSigner0.createProxy(masterCopy.address, 0);
     const events = await proxyFactory.queryFilter("ProxyCreation");
     const safeProxy = events[events.length - 1].args.proxy;
 
@@ -35,7 +35,7 @@ async function main() {
         [accounts[0].address, accounts[1].address, contractAddresses.Timelock], // _owners List of Safe owners
         2, // _threshold Number of required confirmations for a Safe transaction.
         ZERO_ADDRESS, // to Contract address for optional delegate call
-        "0x", // data Data payload for optional delegate call
+        0, // data Data payload for optional delegate call
         ZERO_ADDRESS, // fallbackHandler Handler for fallback calls to this contract
         ZERO_ADDRESS, // paymentToken Token that should be used for the payment (0 is ETH)
         0, // payment Value that should be paid
