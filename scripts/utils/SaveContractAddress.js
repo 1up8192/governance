@@ -1,4 +1,4 @@
-module.exports = async function saveContractAddress(name, contract) {
+module.exports = async function saveContractAddress(name, address) {
     const fs = require("fs");
 
     contractAddressesFile = "./ContractAddresses.json";
@@ -6,11 +6,11 @@ module.exports = async function saveContractAddress(name, contract) {
     if (!fs.existsSync(contractAddressesFile)) {
         fs.writeFileSync(
             "./ContractAddresses.json",
-            JSON.stringify({ [name]: contract.address }, undefined, 2)
+            JSON.stringify({ [name]: address }, undefined, 2)
         );
     } else {
         const addresses = JSON.parse(fs.readFileSync(contractAddressesFile));
-        addresses[name] = contract.address;
+        addresses[name] = address;
         fs.writeFileSync(
             "./ContractAddresses.json",
             JSON.stringify(addresses, undefined, 2)

@@ -28,7 +28,7 @@ async function main({ tokenRecipient, timeLockAdmin, guardian }) {
     const token = await Token.deploy(tokenRecipient);
     await token.deployed();
     await token.deployTransaction.wait();
-    saveAddress("USF", token)
+    saveAddress("USF", token.address)
 
     // Deploy Timelock
     const delay = 2 * days;
@@ -36,21 +36,21 @@ async function main({ tokenRecipient, timeLockAdmin, guardian }) {
     const timelock = await Timelock.deploy(timeLockAdmin, delay);
     await timelock.deployed();
     await timelock.deployTransaction.wait();
-    saveAddress("Timelock", timelock)
+    saveAddress("Timelock", timelock.address)
 
     // Deploy Governance
     const Gov = await ethers.getContractFactory("GovernorAlpha");
     const gov = await Gov.deploy(timelock.address, token.address, guardian);
     await gov.deployed();
     await gov.deployTransaction.wait();
-    saveAddress("GovernorAlpha", gov)
+    saveAddress("GovernorAlpha", gov.address)
 
      // Deploy Governable
      const Govable = await ethers.getContractFactory("Governable");
      const govable = await Govable.deploy(timelock.address);
      await govable.deployed();
      await govable.deployTransaction.wait();
-     saveAddress("Governable", govable)
+     saveAddress("Governable", govable.address)
 
 
     console.log(`Token deployed to: ${token.address}`);

@@ -1,5 +1,6 @@
 const hre = require("hardhat");
 const ethers = hre.ethers;
+const saveAddress = require('./utils/SaveContractAddress');
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000"
 
 async function main() {
@@ -18,12 +19,21 @@ async function main() {
     const proxyFactory = await GnosisSafeProxyFactory.deploy();
     await proxyFactory.deployed();
 
-    const proxyFactorySigner0 = proxyFactory.connect(accounts[0]);
+    const proxyFactoryWithSigner0 = proxyFactory.connect(accounts[0]);
 
-    const safe = await proxyFactorySigner0.createProxy(masterCopy.address, 0x0);
+    await proxyFactoryWithSigner0.createProxy(masterCopy.address, 0x0);
+    const events = await proxyFactory.queryFilter("ProxyCreation");
+    const safeProxy = events[events.length - 1].args.proxy;
+
+    saveAddress("GnosisSafeMasterCopy", masterCopy.address);
+    saveAddress("GnosisSafe", safeProxy);
+
+    const safe = await ethers.getContractAt("GnosisSafe", safeProxy);
+
+    const safeWithSigner0 = safe.connect(accounts[0]);
 
 
-    /* await gnosisSafe.setup(
+    await safeWithSigner0.setup(
         [accounts[0].address, accounts[1].address, accounts[2].address], // _owners List of Safe owners
         2, // _threshold Number of required confirmations for a Safe transaction.
         ZERO_ADDRESS, // to Contract address for optional delegate call
@@ -32,8 +42,7 @@ async function main() {
         ZERO_ADDRESS, // paymentToken Token that should be used for the payment (0 is ETH)
         0, // payment Value that should be paid
         ZERO_ADDRESS // paymentReceiver Adddress that should receive the payment (or 0 if tx.origin)
-    );
-    //saveAddress("GnosisSafe", gnosisSafe) */
+    ); 
 
     console.log(`GnosisSafe deployed to: ${safe.address}`)
 
