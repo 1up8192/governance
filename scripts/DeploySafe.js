@@ -11,9 +11,19 @@ async function main() {
 
     // Deploy GnosisSafe
     const GnosisSafe = await ethers.getContractFactory("GnosisSafe");
-    let gnosisSafe = await GnosisSafe.deploy();
-    await gnosisSafe.deployed();
-    await gnosisSafe.setup(
+    const masterCopy = await GnosisSafe.deploy();
+    await masterCopy.deployed();
+
+    const GnosisSafeProxyFactory = await ethers.getContractFactory("GnosisSafeProxyFactory");
+    const proxyFactory = await GnosisSafeProxyFactory.deploy();
+    await proxyFactory.deployed();
+
+    const proxyFactorySigner0 = proxyFactory.connect(accounts[0]);
+
+    const safe = await proxyFactorySigner0.createProxy(masterCopy.address, 0x0);
+
+
+    /* await gnosisSafe.setup(
         [accounts[0].address, accounts[1].address, accounts[2].address], // _owners List of Safe owners
         2, // _threshold Number of required confirmations for a Safe transaction.
         ZERO_ADDRESS, // to Contract address for optional delegate call
@@ -23,9 +33,9 @@ async function main() {
         0, // payment Value that should be paid
         ZERO_ADDRESS // paymentReceiver Adddress that should receive the payment (or 0 if tx.origin)
     );
-    //saveAddress("GnosisSafe", gnosisSafe)
+    //saveAddress("GnosisSafe", gnosisSafe) */
 
-    console.log(`GnosisSafe deployed to: ${gnosisSafe.address}`)
+    console.log(`GnosisSafe deployed to: ${safe.address}`)
 
     //const initialBalance = await token.balanceOf(tokenRecipient);
     //console.log(`${initialBalance / 1e18} tokens transfered to ${tokenRecipient}`);

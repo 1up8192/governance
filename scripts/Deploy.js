@@ -2,6 +2,7 @@
 const hre = require("hardhat");
 const ethers = hre.ethers;
 const { days, advanceTime, advanceBlock, advanceTimeAndBlock } = require('./utils/TimeTravel');
+const saveAddress = require('./utils/SaveContractAddress');
 
 async function main({ tokenRecipient, timeLockAdmin, guardian }) {
 
@@ -61,25 +62,7 @@ async function main({ tokenRecipient, timeLockAdmin, guardian }) {
     console.log(`${initialBalance / 1e18} tokens transfered to ${tokenRecipient}`);
 }
 
-async function saveAddress(name, contract) {
-    const fs = require("fs");
 
-    contractAddressesFile = "./ContractAddresses.json";
-
-    if (!fs.existsSync(contractAddressesFile)) {
-        fs.writeFileSync(
-            "./ContractAddresses.json",
-            JSON.stringify({ [name]: contract.address }, undefined, 2)
-        );
-    } else {
-        const addresses = JSON.parse(fs.readFileSync(contractAddressesFile));
-        addresses[name] = contract.address;
-        fs.writeFileSync(
-            "./ContractAddresses.json",
-            JSON.stringify(addresses, undefined, 2)
-        );
-    }
-}
 
 module.exports = {
     deploy: main
