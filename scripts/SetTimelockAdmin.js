@@ -21,21 +21,29 @@ async function main() {
     const calldata = timelock.interface.encodeFunctionData("setPendingAdmin", [gov.address]);
 
     const timelockWithSigner0 = timelock.connect(accounts[0]);
-    const blockTimestamp = (await ethers.provider.getBlock()).timestamp + 3 * days;
+
+    let waitTime;
+    const networkId = (await ethers.provider.getNetwork()).chainId;
+
+    if(networkId == 1337){
+        waitTime = 3 * days;
+    } else if(networkId == 3) {
+        waitTime = 100;
+    }
+
+    const blockTimestamp = (await ethers.provider.getBlock()).timestamp + waitTime;
 
     let tx;
     tx = await timelockWithSigner0.queueTransaction(timelock.address, 0, "", calldata, blockTimestamp);
     await tx.wait();
 
-    const networkId = (await ethers.provider.getNetwork()).chainId;
     if(networkId == 1337){
-        await advanceTimeAndBlock(3 * days);
+        await advanceTimeAndBlock(waitTime);
     } else if(networkId == 3) {
-        const block = 15;
-        await waitSeconds(block)
+        await waitSeconds(waitTime)
     }
 
-    tx = await timelockWithSigner0.executeTransaction(timelock.address, 0, "", calldata, blockTimestamp);
+    tx = await timelockWithSigner0.executeTransaction(timelock.address, 0, "", calldata, blockTimestamp, { gasLimit: 500000 });
     await tx.wait();
 
     const govWithSigner0 = gov.connect(accounts[0]);

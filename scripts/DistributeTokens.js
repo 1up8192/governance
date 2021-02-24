@@ -17,19 +17,19 @@ async function main() {
     tx = await usfWithSigner0.delegate(addresses[0]);
     await tx.wait();
     
-    tx = await usfWithSigner0.transfer(addresses[1], ethers.utils.parseEther("350000"));
+    tx = await usfWithSigner0.transfer(addresses[1], ethers.utils.parseEther("350000"), { gasLimit: 150000 });
     await tx.wait();
     const usfWithSigner1 = usf.connect(accounts[1]);
     tx = await usfWithSigner1.delegate(addresses[1]);
     await tx.wait();
     
-    tx = await usfWithSigner0.transfer(addresses[2], ethers.utils.parseEther("50000"));
+    tx = await usfWithSigner0.transfer(addresses[2], ethers.utils.parseEther("50000"), { gasLimit: 150000 });
     await tx.wait();
     const usfWithSigner2 = usf.connect(accounts[2]);
     tx = await usfWithSigner2.delegate(addresses[2]);
     await tx.wait();
     
-    tx = await usfWithSigner0.transfer(addresses[3], ethers.utils.parseEther("200000"));
+    tx = await usfWithSigner0.transfer(addresses[3], ethers.utils.parseEther("200000"), { gasLimit: 150000 });
     await tx.wait();
     const usfWithSigner3 = usf.connect(accounts[3]);
     //actually delegates to a different account

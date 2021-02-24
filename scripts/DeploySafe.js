@@ -18,7 +18,8 @@ async function main() {
 
     const proxyFactoryWithSigner0 = proxyFactory.connect(accounts[0]);
 
-    await proxyFactoryWithSigner0.createProxy(masterCopy.address, 0);
+    let tx = await proxyFactoryWithSigner0.createProxy(masterCopy.address, 0);
+    await tx.wait();
     const events = await proxyFactory.queryFilter("ProxyCreation");
     const safeProxy = events[events.length - 1].args.proxy;
 
