@@ -2,7 +2,7 @@
 const hre = require("hardhat");
 const ethers = hre.ethers;
 const web3 = hre.web3;
-const contractAddress = require("../ContractAddresses.json");
+const contractAddresses = require("../ContractAddresses.json");
 const BigNumber = ethers.BigNumber;
 const { days, advanceTime, advanceBlock, advanceTimeAndBlock } = require('./utils/TimeTravel');
 
@@ -11,7 +11,7 @@ async function main() {
     const accounts = await ethers.getSigners();
     const addresses = accounts.map(account => account.address);
 
-    const usf = await ethers.getContractAt("USF", contractAddress.USF);
+    const usf = await ethers.getContractAt("USF", contractAddresses.USF);
     const usfWithSigner0 = usf.connect(accounts[0]);
     let tx;
     tx = await usfWithSigner0.delegate(addresses[0]);
@@ -35,6 +35,8 @@ async function main() {
     //actually delegates to a different account
     tx = await usfWithSigner3.delegate(addresses[4]);
     await tx.wait();
+
+    const gnosisSafe1Address = contractAddresses.GnosisSafe1;
 
     let index = 0;
     for await (let balance of addresses.slice(0, 5).map(async address => usf.balanceOf(address))) {

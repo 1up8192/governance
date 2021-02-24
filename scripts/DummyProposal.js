@@ -33,7 +33,10 @@ async function main() {
     console.log("accpunt 0 created proposal id: ", proposalId.toString());
     console.log(`proposal state: ${await getProposalState(gov, proposalId)}`);
 
-    await advanceBlock();
+    const networkId = (await ethers.provider.getNetwork()).chainId;
+    if (networkId == 1337) {
+        await advanceBlock();
+    }
 
     const govWithSigner1 = gov.connect(accounts[1]);
     tx = await govWithSigner1.castVote(proposalId, true);
@@ -48,16 +51,27 @@ async function main() {
     console.log("accpunt 2 voted yes");
     console.log(`proposal state: ${await getProposalState(gov, proposalId)}`);
 
-    for (let index = 0; index < 6; index++) {
-        await advanceBlock();
+    if (networkId == 1337) {
+        for (let index = 0; index < 4; index++) {
+            await advanceBlock();
+        }
+    } else if (networkId == 3) {
+        const block = 15;
+        await waitSeconds(4*block)
     }
+
 
     tx = await govWithSigner0.queue(proposalId);
     await tx.wait();
     console.log("proposal queued");
     console.log(`proposal state: ${await getProposalState(gov, proposalId)}`);
 
-    advanceTimeAndBlock(3 * days);
+    if (networkId == 1337) {
+        await advanceTimeAndBlock(3 * days);
+    } else if (networkId == 3) {
+        const block = 15;
+        await waitSeconds(block)
+    }
 
     tx = await govWithSigner0.execute(proposalId);
     await tx.wait();

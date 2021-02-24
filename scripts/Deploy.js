@@ -31,7 +31,13 @@ async function main({ tokenRecipient, timeLockAdmin, guardian }) {
     saveAddress("USF", token.address)
 
     // Deploy Timelock
-    const delay = 2 * days;
+    const networkId = (await ethers.provider.getNetwork()).chainId;
+    let delay;
+    if(networkId == 3){
+        delay = 0;
+    } else {
+        delay = 2 * days;
+    }
     const Timelock = await ethers.getContractFactory("Timelock");
     const timelock = await Timelock.deploy(timeLockAdmin, delay);
     await timelock.deployed();

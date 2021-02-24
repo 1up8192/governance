@@ -22,7 +22,7 @@ contract GovernorAlpha {
     function votingDelay() public pure returns (uint) { return 1; } // 1 block
 
     /// @notice The duration of voting on a proposal, in blocks
-    function votingPeriod() public pure returns (uint) { return 5; /* FIXME for testing 17280; */ } // ~3 days in blocks (assuming 15s blocks)
+    function votingPeriod() public pure returns (uint) { return 3; /* FIXME for testing 17280; */ } // ~3 days in blocks (assuming 15s blocks)
 
     /// @notice The address of the Unslashed Protocol Timelock
     TimelockInterface public timelock;

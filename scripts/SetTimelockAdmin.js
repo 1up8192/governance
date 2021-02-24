@@ -5,6 +5,7 @@ const web3 = hre.web3;
 const contractAddress = require("../ContractAddresses.json");
 const { days, advanceTime, advanceBlock, advanceTimeAndBlock } = require('./utils/TimeTravel');
 const getProposalState = require('./utils/GetProposalState');
+const waitSeconds = require('./utils/Wait');
 
 async function main() {
 
@@ -26,7 +27,13 @@ async function main() {
     tx = await timelockWithSigner0.queueTransaction(timelock.address, 0, "", calldata, blockTimestamp);
     await tx.wait();
 
-    advanceTimeAndBlock(3 * days);
+    const networkId = (await ethers.provider.getNetwork()).chainId;
+    if(networkId == 1337){
+        await advanceTimeAndBlock(3 * days);
+    } else if(networkId == 3) {
+        const block = 15;
+        await waitSeconds(block)
+    }
 
     tx = await timelockWithSigner0.executeTransaction(timelock.address, 0, "", calldata, blockTimestamp);
     await tx.wait();
