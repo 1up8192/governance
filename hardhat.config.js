@@ -81,6 +81,16 @@ module.exports = {
         mnemonic: Secrets.mnemonic,
         initialIndex: 0,
         count: 10,
+        gasPrice: 10000000000, // 10 gwei
+      }
+    },
+    goerli: {
+      url: `https://goerli.infura.io/v3/${Secrets.infuraProjectId}`,
+      accounts: {
+        mnemonic: Secrets.mnemonic,
+        initialIndex: 0,
+        count: 10,
+        gasPrice: 5000000000, // 5 gwei
       }
     }
   },

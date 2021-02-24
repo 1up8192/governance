@@ -33,7 +33,7 @@ async function main({ tokenRecipient, timeLockAdmin, guardian }) {
     // Deploy Timelock
     const networkId = (await ethers.provider.getNetwork()).chainId;
     let delay;
-    if(networkId == 3){
+    if(networkId == 3 || networkId == 5){
         delay = 0;
     } else {
         delay = 2 * days;

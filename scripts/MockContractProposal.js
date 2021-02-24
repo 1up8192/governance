@@ -109,7 +109,7 @@ async function main() {
         for (let index = 0; index < 4; index++) {
             await advanceBlock();
         }
-    } else if (networkId == 3) {
+    } else if (networkId == 3 || networkId == 5) {
         const block = 15;
         await waitSeconds(4*block)
     }
@@ -122,11 +122,11 @@ async function main() {
 
     if (networkId == 1337) {
         await advanceTimeAndBlock(3 * days);
-    } else if (networkId == 3) {
+    } else if (networkId == 3 || networkId == 5) {
         const block = 15;
         await waitSeconds(block)
     }
-    
+
     tx = await govWithSigner0.execute(proposalId, { gasLimit: 500000 });
     await tx.wait();
     console.log("proposal executed");

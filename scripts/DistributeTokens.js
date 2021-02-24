@@ -36,8 +36,6 @@ async function main() {
     tx = await usfWithSigner3.delegate(addresses[4]);
     await tx.wait();
 
-    const gnosisSafe1Address = contractAddresses.GnosisSafe1;
-
     let index = 0;
     for await (let balance of addresses.slice(0, 5).map(async address => usf.balanceOf(address))) {
         console.log(`account ${index} balance: ${balance}`)

@@ -25,7 +25,7 @@ async function main() {
     console.log(`proposal state: ${await getProposalState(gov, proposalId)}`);
 
     let tx;
-    tx = await govWithSigner0.cancel(proposalId);
+    tx = await govWithSigner0.cancel(proposalId, { gasLimit: 500000 });
     await tx.wait();
     console.log(`cancel tx executed`);
     console.log(`proposal state: ${await getProposalState(gov, proposalId)}`);

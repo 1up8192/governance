@@ -27,7 +27,7 @@ async function main() {
 
     if(networkId == 1337){
         waitTime = 3 * days;
-    } else if(networkId == 3) {
+    } else if(networkId == 3 || networkId == 5) {
         waitTime = 100;
     }
 
@@ -39,7 +39,7 @@ async function main() {
 
     if(networkId == 1337){
         await advanceTimeAndBlock(waitTime);
-    } else if(networkId == 3) {
+    } else if(networkId == 3 || networkId == 5) {
         await waitSeconds(waitTime)
     }
 

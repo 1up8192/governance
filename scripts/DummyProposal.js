@@ -39,36 +39,36 @@ async function main() {
     }
 
     const govWithSigner1 = gov.connect(accounts[1]);
-    tx = await govWithSigner1.castVote(proposalId, true);
+    tx = await govWithSigner1.castVote(proposalId, true, { gasLimit: 150000 });
     await tx.wait();
     console.log("accpunt 1 voted yes");
     console.log(`proposal state: ${await getProposalState(gov, proposalId)}`);
 
     //delegated vote
     const govWithSigner4 = gov.connect(accounts[4]);
-    tx = await govWithSigner4.castVote(proposalId, true);
+    tx = await govWithSigner4.castVote(proposalId, true, { gasLimit: 150000 });
     await tx.wait();
     console.log("accpunt 2 voted yes");
     console.log(`proposal state: ${await getProposalState(gov, proposalId)}`);
 
     if (networkId == 1337) {
-        for (let index = 0; index < 4; index++) {
+        for (let index = 0; index < 11; index++) {
             await advanceBlock();
         }
-    } else if (networkId == 3) {
+    } else if (networkId == 3 || networkId == 5) {
         const block = 15;
-        await waitSeconds(4*block)
+        await waitSeconds(11*block)
     }
 
 
-    tx = await govWithSigner0.queue(proposalId);
+    tx = await govWithSigner0.queue(proposalId, { gasLimit: 150000 });
     await tx.wait();
     console.log("proposal queued");
     console.log(`proposal state: ${await getProposalState(gov, proposalId)}`);
 
     if (networkId == 1337) {
         await advanceTimeAndBlock(3 * days);
-    } else if (networkId == 3) {
+    } else if (networkId == 3 || networkId == 5) {
         const block = 15;
         await waitSeconds(block)
     }
@@ -76,7 +76,7 @@ async function main() {
     tx = await govWithSigner0.execute(proposalId);
     await tx.wait();
     console.log("proposal executed");
-    console.log(`proposal state: ${await getProposalState(gov, proposalId)}`);
+    console.log(`proposal state: ${await getProposalState(gov, proposalId), { gasLimit: 500000 }}`);
 
 }
 

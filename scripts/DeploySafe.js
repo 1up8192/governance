@@ -18,7 +18,7 @@ async function main() {
 
     const proxyFactoryWithSigner0 = proxyFactory.connect(accounts[0]);
 
-    let tx = await proxyFactoryWithSigner0.createProxy(masterCopy.address, 0);
+    let tx = await proxyFactoryWithSigner0.createProxy(masterCopy.address, 0, { gasLimit: 200000 });
     await tx.wait();
     const events = await proxyFactory.queryFilter("ProxyCreation");
     const safeProxy = events[events.length - 1].args.proxy;
@@ -40,7 +40,8 @@ async function main() {
         ZERO_ADDRESS, // fallbackHandler Handler for fallback calls to this contract
         ZERO_ADDRESS, // paymentToken Token that should be used for the payment (0 is ETH)
         0, // payment Value that should be paid
-        ZERO_ADDRESS // paymentReceiver Adddress that should receive the payment (or 0 if tx.origin)
+        ZERO_ADDRESS, // paymentReceiver Adddress that should receive the payment (or 0 if tx.origin)
+        { gasLimit: 150000 }
     ); 
 
     console.log(`GnosisSafe deployed to: ${safe.address}`)
