@@ -19,7 +19,7 @@ contract GovernorAlpha {
     function proposalMaxOperations() public pure returns (uint) { return 10; } // 10 actions
 
     /// @notice The delay before voting on a proposal may take place, once proposed
-    function votingDelay() public pure returns (uint) { return 1; } // 1 block
+    function votingDelay() public pure returns (uint) { return 0; } // 1 block
 
     /// @notice The duration of voting on a proposal, in blocks
     function votingPeriod() public pure returns (uint) { return 10; /* FIXME for testing 17280; */ } // ~3 days in blocks (assuming 15s blocks)

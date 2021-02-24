@@ -40,8 +40,7 @@ async function main() {
         ZERO_ADDRESS, // fallbackHandler Handler for fallback calls to this contract
         ZERO_ADDRESS, // paymentToken Token that should be used for the payment (0 is ETH)
         0, // payment Value that should be paid
-        ZERO_ADDRESS, // paymentReceiver Adddress that should receive the payment (or 0 if tx.origin)
-        { gasLimit: 150000 }
+        ZERO_ADDRESS // paymentReceiver Adddress that should receive the payment (or 0 if tx.origin)
     ); 
 
     console.log(`GnosisSafe deployed to: ${safe.address}`)

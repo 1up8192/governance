@@ -5,6 +5,7 @@ const web3 = hre.web3;
 const contractAddress = require("../ContractAddresses.json");
 const { days, advanceTime, advanceBlock, advanceTimeAndBlock } = require('./utils/TimeTravel');
 const getProposalState = require('./utils/GetProposalState');
+const waitSeconds = require('./utils/Wait');
 
 function encode(types, values) {
     return ethers.utils.defaultAbiCoder.encode(types, values);
