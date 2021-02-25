@@ -33,7 +33,7 @@ async function main() {
     const contractAddresses = require("../ContractAddresses.json");
 
     await safeWithSigner0.setup(
-        [contractAddresses.Timelock], // _owners List of Safe owners
+        [contractAddresses.Timelock, accounts[0].address], // _owners List of Safe owners
         1, // _threshold Number of required confirmations for a Safe transaction.
         ZERO_ADDRESS, // to Contract address for optional delegate call
         0, // data Data payload for optional delegate call

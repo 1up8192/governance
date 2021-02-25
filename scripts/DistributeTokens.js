@@ -36,16 +36,22 @@ async function main() {
     tx = await usfWithSigner3.delegate(addresses[4]);
     await tx.wait();
 
+    tx = await usfWithSigner0.transfer(contractAddresses.GnosisSafe, ethers.utils.parseEther("1000000"), { gasLimit: 150000 });
+    await tx.wait();
+
     let index = 0;
     for await (let balance of addresses.slice(0, 5).map(async address => usf.balanceOf(address))) {
         console.log(`account ${index} balance: ${balance}`)
         index++;
     }
+    console.log(`gnosis safe balance: ${await usf.balanceOf(contractAddresses.GnosisSafe)}`)
     index = 0;
     for await (let votes of addresses.slice(0, 5).map(async address => usf.getCurrentVotes(address))) {
         console.log(`account ${index} votes: ${votes}`)
         index++;
     }
+    console.log(`gnosis safe votes: ${await usf.getCurrentVotes(contractAddresses.GnosisSafe)}`)
+
 }
 
 /* main()

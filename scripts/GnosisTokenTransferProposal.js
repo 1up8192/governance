@@ -45,6 +45,8 @@ async function main() {
         nonce
     );
 
+    const signature = "0x000000000000000000000000" + contractAddress.GovernorAlpha.replace('0x', '') + "0000000000000000000000000000000000000000000000000000000000000000" + "01"
+
     const approveHashCalldata = gnosisSafe.interface.encodeFunctionData("approveHash", [transactionHash]);
     const execTransactionCalldata = gnosisSafe.interface.encodeFunctionData("execTransaction", [
         usf.address,
@@ -56,7 +58,7 @@ async function main() {
         0,
         zeroAddress,
         zeroAddress,
-        nonce
+        signature
     ]);
 
 
@@ -91,7 +93,7 @@ async function main() {
     const govWithSigner4 = gov.connect(accounts[4]);
     tx = await govWithSigner4.castVote(proposalId, true, { gasLimit: 150000 });
     await tx.wait();
-    console.log("account 2 voted yes");
+    console.log("account 4 voted yes");
     console.log(`proposal state: ${await getProposalState(gov, proposalId)}`);
 
     if (networkId == 1337) {
@@ -104,7 +106,7 @@ async function main() {
     }
 
 
-    tx = await govWithSigner0.queue(proposalId, { gasLimit: 150000 });
+    tx = await govWithSigner0.queue(proposalId, { gasLimit: 200000 } );
     await tx.wait();
     console.log("proposal queued");
     console.log(`proposal state: ${await getProposalState(gov, proposalId)}`);
@@ -121,9 +123,6 @@ async function main() {
     console.log("proposal executed");
     console.log(`proposal state: ${await getProposalState(gov, proposalId)}`);
 
-    const xValue2 = await governable.getX();
-
-    console.log(`governable value after proposal executed: ${xValue2.toString()}`);
 }
 
 main()
