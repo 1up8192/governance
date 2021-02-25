@@ -2,7 +2,7 @@
 const hre = require("hardhat");
 const ethers = hre.ethers;
 const web3 = hre.web3;
-const contractAddress = require("../ContractAddresses.json");
+const contractAddresses = require("../ContractAddresses.json");
 const { days, advanceTime, advanceBlock, advanceTimeAndBlock } = require('./utils/TimeTravel');
 const getProposalState = require('./utils/GetProposalState');
 const waitSeconds = require('./utils/Wait');
@@ -23,14 +23,20 @@ async function main() {
 
     chainId = await web3.eth.getChainId();
 
-    const usf = await ethers.getContractAt("USF", contractAddress.USF);
+    const usf = await ethers.getContractAt("USF", contractAddresses.USF);
 
-    const transferCalldata = usf.interface.encodeFunctionData("transfer", [addresses[5], ethers.utils.parseEther("50000")]);
+    console.log(`account 5 token balance before: ${(await usf.balanceOf(addresses[5]))}`);
+    console.log(`gnosisSafe token balance before: ${(await usf.balanceOf(contractAddresses.GnosisSafe))}`);
+
+    const toSend = "50000";
+    console.log(`sending ${toSend}`);
+
+    const transferCalldata = usf.interface.encodeFunctionData("transfer", [addresses[5], ethers.utils.parseEther(toSend)]);
 
     console.log("transferCalldata:", transferCalldata);
 
-    
-    const gnosisSafe = await ethers.getContractAt("GnosisSafe", contractAddress.GnosisSafe);
+
+    const gnosisSafe = await ethers.getContractAt("GnosisSafe", contractAddresses.GnosisSafe);
     const nonce = await gnosisSafe.nonce()
     const transactionHash = await gnosisSafe.getTransactionHash(
         usf.address,
@@ -45,7 +51,7 @@ async function main() {
         nonce
     );
 
-    const signature = "0x000000000000000000000000" + contractAddress.GovernorAlpha.replace('0x', '') + "0000000000000000000000000000000000000000000000000000000000000000" + "01"
+    const signature = "0x000000000000000000000000" + contractAddresses.Timelock.replace('0x', '') + "0000000000000000000000000000000000000000000000000000000000000000" + "01"
 
     const approveHashCalldata = gnosisSafe.interface.encodeFunctionData("approveHash", [transactionHash]);
     const execTransactionCalldata = gnosisSafe.interface.encodeFunctionData("execTransaction", [
@@ -61,15 +67,30 @@ async function main() {
         signature
     ]);
 
+    await makeAndExecuteProposal(accounts, approveHashCalldata);
+    await makeAndExecuteProposal(accounts, execTransactionCalldata);
 
-    const gov = await ethers.getContractAt("GovernorAlpha", contractAddress.GovernorAlpha);
+
+    /*     const usfWithSigner5 = usf.connect(accounts[5]);
+        tx = await usfWithSigner5.transferFrom(contractAddresses.GnosisSafe, addresses[5], toSend);
+        tx.wait(); */
+
+
+    console.log(`account 5 token balance after: ${(await usf.balanceOf(addresses[5]))}`)
+    console.log(`gnosisSafe token balance after: ${(await usf.balanceOf(contractAddresses.GnosisSafe))}`)
+
+}
+
+async function makeAndExecuteProposal(accounts, calldata) {
+    const gov = await ethers.getContractAt("GovernorAlpha", contractAddresses.GovernorAlpha);
     const govWithSigner0 = gov.connect(accounts[0]);
     let tx;
+
     tx = await govWithSigner0.propose(
-        [gnosisSafe.address, gnosisSafe.address],
-        [0, 0],
-        ["", ""],
-        [approveHashCalldata, execTransactionCalldata],
+        [contractAddresses.GnosisSafe],
+        [0],
+        [""],
+        [calldata],
         "mock contract proposal"
     );
 
@@ -102,11 +123,11 @@ async function main() {
         }
     } else if (networkId == 3 || networkId == 5) {
         const block = 15;
-        await waitSeconds(11 * block)
+        await waitSeconds(11 * block);
     }
 
 
-    tx = await govWithSigner0.queue(proposalId, { gasLimit: 200000 } );
+    tx = await govWithSigner0.queue(proposalId, { gasLimit: 200000 });
     await tx.wait();
     console.log("proposal queued");
     console.log(`proposal state: ${await getProposalState(gov, proposalId)}`);
@@ -115,14 +136,13 @@ async function main() {
         await advanceTimeAndBlock(3 * days);
     } else if (networkId == 3 || networkId == 5) {
         const block = 15;
-        await waitSeconds(block)
+        await waitSeconds(block);
     }
 
     tx = await govWithSigner0.execute(proposalId, { gasLimit: 500000 });
     await tx.wait();
     console.log("proposal executed");
     console.log(`proposal state: ${await getProposalState(gov, proposalId)}`);
-
 }
 
 main()
