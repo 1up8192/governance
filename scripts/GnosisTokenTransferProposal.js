@@ -51,8 +51,7 @@ async function main() {
         nonce
     );
 
-    const signature = "0x000000000000000000000000" + contractAddresses.Timelock.replace('0x', '') + "0000000000000000000000000000000000000000000000000000000000000000" + "01"
-
+    const signature = "0x000000000000000000000000" + contractAddresses.Timelock.replace('0x', '') + "0000000000000000000000000000000000000000000000000000000000000000" + "01";
     const approveHashCalldata = gnosisSafe.interface.encodeFunctionData("approveHash", [transactionHash]);
     const execTransactionCalldata = gnosisSafe.interface.encodeFunctionData("execTransaction", [
         usf.address,

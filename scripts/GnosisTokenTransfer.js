@@ -45,12 +45,31 @@ async function main() {
         nonce
     );
 
+    const transactionMessage = await gnosisSafe.encodeTransactionData(
+        usf.address,
+        0,
+        transferCalldata,
+        0,
+        0,
+        0,
+        0,
+        zeroAddress,
+        zeroAddress,
+        nonce
+    );
+
+    const externalAccountSignature = await accounts[0].signMessage(ethers.utils.arrayify(transactionHash));
+    console.log("externalAccountSignature: ", externalAccountSignature);
+    const signature = externalAccountSignature + "000000000000000000000000" + addresses[0].replace('0x', '') + "0000000000000000000000000000000000000000000000000000000000000000" + "01";
+
+    console.log("signatures: ", signature);
+
+
     const gnosisSafeWithSigner0 = gnosisSafe.connect(accounts[0]);
 
     let tx;
     tx = await gnosisSafeWithSigner0.approveHash(transactionHash);
     tx.wait();
-    const signature = "0x000000000000000000000000" + addresses[0].replace('0x', '') + "0000000000000000000000000000000000000000000000000000000000000000" + "01"
     tx = await gnosisSafeWithSigner0.execTransaction(
         usf.address,
         0,
@@ -65,7 +84,10 @@ async function main() {
     );
     tx.wait();
 
+    const events = await gnosisSafe.queryFilter("CurrentOwner");
+    const currentOwner = events[events.length - 1].args.currentOwner;
 
+    console.log("currentOwner: ", currentOwner)
 
 
     console.log(`account 5 token balance after: ${(await usf.balanceOf(addresses[5]))}`)
