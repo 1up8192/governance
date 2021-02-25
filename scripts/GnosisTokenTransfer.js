@@ -19,12 +19,6 @@ async function main() {
     console.log(`account 5 token balance before: ${(await usf.balanceOf(addresses[5]))}`)
     console.log(`gnosisSafe token balance before: ${(await usf.balanceOf(contractAddresses.GnosisSafe))}`)
 
-    let index = 0;
-    for await (let balance of addresses.slice(0, 5).map(async address => usf.balanceOf(address))) {
-        console.log(`account ${index} balance: ${balance}`)
-        index++;
-    }
-
     const toSend = "50000";
     console.log(`sending ${toSend}`);
 
@@ -45,23 +39,18 @@ async function main() {
         nonce
     );
 
-    const transactionMessage = await gnosisSafe.encodeTransactionData(
-        usf.address,
-        0,
-        transferCalldata,
-        0,
-        0,
-        0,
-        0,
-        zeroAddress,
-        zeroAddress,
-        nonce
-    );
+    console.log("transactionHash: ", transactionHash);
 
-    const externalAccountSignature = await accounts[0].signMessage(ethers.utils.arrayify(transactionHash));
+    const externalAccountSignature = await accounts[1].signMessage(ethers.BigNumber.from(transactionHash));
+
+    const externalAccountSignatureArr = ethers.utils.arrayify(externalAccountSignature);
+    externalAccountSignatureArr[64] += 4;
+    const externalAccountSignatureVPlus4 = ethers.utils.hexlify(externalAccountSignatureArr);
+
     console.log("externalAccountSignature: ", externalAccountSignature);
-    const signature = externalAccountSignature + "000000000000000000000000" + addresses[0].replace('0x', '') + "0000000000000000000000000000000000000000000000000000000000000000" + "01";
-
+    console.log("externalAccountSignatureVPlus4: ", externalAccountSignatureVPlus4);
+    const signature = "0x000000000000000000000000" + addresses[0].replace('0x', '') + "0000000000000000000000000000000000000000000000000000000000000000" + "01" +
+        externalAccountSignatureVPlus4.replace('0x', '');
     console.log("signatures: ", signature);
 
 
@@ -84,11 +73,23 @@ async function main() {
     );
     tx.wait();
 
+    /* const networkId = (await ethers.provider.getNetwork()).chainId;
     const events = await gnosisSafe.queryFilter("CurrentOwner");
-    const currentOwner = events[events.length - 1].args.currentOwner;
+    if (networkId != 1337) {
+        await waitSeconds(10);
+    }
 
-    console.log("currentOwner: ", currentOwner)
+    const currentOwner1 = events[events.length - 1].args.currentOwner;
+    const lastOwner1 = events[events.length - 1].args.lastOwner;
+    const currentOwner2 = events[events.length - 1].args.currentOwner;
+    const lastOwner2 = events[events.length - 1].args.lastOwner;
 
+
+    console.log("currentOwner1: ", currentOwner1)
+    console.log("lastOwner1: ", lastOwner1)
+    console.log("currentOwner2: ", currentOwner2)
+    console.log("lastOwner2: ", lastOwner2)
+    */
 
     console.log(`account 5 token balance after: ${(await usf.balanceOf(addresses[5]))}`)
     console.log(`gnosisSafe token balance after: ${(await usf.balanceOf(contractAddresses.GnosisSafe))}`)
