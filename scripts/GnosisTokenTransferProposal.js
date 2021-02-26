@@ -51,7 +51,25 @@ async function main() {
         nonce
     );
 
-    const signature = "0x000000000000000000000000" + contractAddresses.Timelock.replace('0x', '') + "0000000000000000000000000000000000000000000000000000000000000000" + "01";
+    console.log("transactionHash: ", transactionHash);
+
+    const externalAccountSignature = await accounts[0].signMessage(ethers.BigNumber.from(transactionHash));
+
+    const externalAccountSignatureArr = ethers.utils.arrayify(externalAccountSignature);
+    externalAccountSignatureArr[64] += 4;
+    const externalAccountSignatureVPlus4 = ethers.utils.hexlify(externalAccountSignatureArr);
+
+    const addressesAndSignatures = {};
+    addressesAndSignatures[contractAddresses.Timelock] = "000000000000000000000000" + contractAddresses.Timelock.replace('0x', '') + "0000000000000000000000000000000000000000000000000000000000000000" + "01";
+    addressesAndSignatures[addresses[0]] = externalAccountSignatureVPlus4.replace('0x', '');
+    console.log("externalAccountSignature, v + 4: ", externalAccountSignatureVPlus4);
+    let signatures = "0x";
+    //signatures has to be ordered by accounts
+    for (const address of Object.keys(addressesAndSignatures).sort()) {
+        signatures += addressesAndSignatures[address];
+    }
+    console.log("signatures: ", signatures);
+
     const approveHashCalldata = gnosisSafe.interface.encodeFunctionData("approveHash", [transactionHash]);
     const execTransactionCalldata = gnosisSafe.interface.encodeFunctionData("execTransaction", [
         usf.address,
@@ -63,7 +81,7 @@ async function main() {
         0,
         zeroAddress,
         zeroAddress,
-        signature
+        signatures
     ]);
 
     await makeAndExecuteProposal(accounts, approveHashCalldata);

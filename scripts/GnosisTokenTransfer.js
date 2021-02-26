@@ -47,12 +47,17 @@ async function main() {
     externalAccountSignatureArr[64] += 4;
     const externalAccountSignatureVPlus4 = ethers.utils.hexlify(externalAccountSignatureArr);
 
-    console.log("externalAccountSignature: ", externalAccountSignature);
-    console.log("externalAccountSignatureVPlus4: ", externalAccountSignatureVPlus4);
-    const signature = "0x000000000000000000000000" + addresses[0].replace('0x', '') + "0000000000000000000000000000000000000000000000000000000000000000" + "01" +
-        externalAccountSignatureVPlus4.replace('0x', '');
-    console.log("signatures: ", signature);
-
+    const addressesAndSignatures = {};
+    addressesAndSignatures[addresses[0]] = "000000000000000000000000" + addresses[0].replace('0x', '') + "0000000000000000000000000000000000000000000000000000000000000000" + "01";
+    addressesAndSignatures[addresses[1]] = externalAccountSignatureVPlus4.replace('0x', '');
+    console.log("externalAccountSignature, v + 4: ", externalAccountSignatureVPlus4);
+    let signatures = "0x";
+    //signatures has to be ordered by accounts
+    for (const address of Object.keys(addressesAndSignatures).sort()) {
+        signatures += addressesAndSignatures[address];
+    }
+    console.log("signatures: ", signatures);
+    
 
     const gnosisSafeWithSigner0 = gnosisSafe.connect(accounts[0]);
 
@@ -69,7 +74,7 @@ async function main() {
         0,
         zeroAddress,
         zeroAddress,
-        signature
+        signatures
     );
     tx.wait();
 
