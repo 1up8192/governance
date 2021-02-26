@@ -50,9 +50,9 @@ steps on ganache
 
 steps on ropsten/goerli
 - have .env setup with your mnemonic and infura id
-- `npx hardhat deploy-mainnet --network <sten/goerli>`
+- `npx hardhat deploy-mainnet --network <ropsten/goerli>`
 - wait for delay (default 60 seconds)
-- `npx hardhat execute-set-timelock-admin --eta <eta timestamp from deploy output> --network <sten/goerli>`
+- `npx hardhat execute-set-timelock-admin --eta <eta timestamp from deploy output> --network <ropsten/goerli>`
 
 steps on mainnet
 - have all parameters correctly set up  delay, safe owner, safe signer, token receivers, all contract parameters in here: https://docs.google.com/spreadsheets/d/1vNLjU2kZ643kDfYi3Db1PVpxVWzt_wAHxd2kc9N_qes/edit#gid=0
