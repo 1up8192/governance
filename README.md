@@ -20,6 +20,8 @@ optional parameter --index: account index of the mnemonic to be used for the dep
 - deploys ProxyFactory contracts
 - creates a gnosis safe proxy and sets it up one of the signers (owners) is the GovernorAlpha 
 - QUESTION: _threshold number value? also there should be external value owners probably, how many, what accounts?
+
+Safe deplyoment can excluded from the process by simply disabling the script and done separately later
 #### DistributeTokensMainnet: 
 - sends tokens to some accounts from deployer address
 - QUESTION: do want to distribute some tokens to external accounts beside the safe to be able to vote, or have external accounts executing transfers from the safe without the governance?
