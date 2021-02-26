@@ -44,13 +44,37 @@ task("deploy", "Deploys a COMPound style governance system")
     const { setTimelockAdmin } = require("./scripts/SetTimelockAdmin");
     await setTimelockAdmin();
     console.log("=== TOKEN DISTRIBUTION ===")
-    const { distributeTokens } = require("./scripts/DistributeTokens");
+    const { distributeTokens } = require("./scripts/DistributeTokensMainnet");
     await distributeTokens();
 
   })
 
+  task("deploy-mainnet", "Deploys a COMPound style governance system")
+  .addOptionalParam("index", "account index of the mnemonic to be used").setAction(async taskArgs => {
+    console.log("=== CONTRACT DEPLOYMENTS ===")
+    const { deploy } = require("./scripts/DeployMainnet");
+    await deploy(taskArgs.index);
+    console.log("=== QUEUE TIMELOCK ADMIN SETUP ===")
+    const { queueSetTimelockAdmin } = require("./scripts/QueueSetTimelockAdminMainnet");
+    await queueSetTimelockAdmin(taskArgs.index);
+    console.log("=== DEPLOY SAFE ===")
+    const { deploySafe } = require("./scripts/DeploySafeMainnet");
+    await deploySafe(taskArgs.index);
+    console.log("=== TOKEN DISTRIBUTION ===")
+    const { distributeTokens } = require("./scripts/DistributeTokensMainnet");
+    await distributeTokens(taskArgs.index);
+  })
+
+  task("execute-set-timelock-admin", "Sets up the timelock admin as the GovernorAlpha contract, has to happen after delay time from deployment (default 2 days)")
+  .addParam("eta", "same eta parameter as output at deployment")
+  .addOptionalParam("index", "account index of the mnemonic to be used").setAction(async taskArgs => {
+    console.log("=== EXECUTE TIMELOCK ADMIN SETUP ===")
+    const { executeSetTimelockAdmin } = require("./scripts/ExecuteSetTimelockAdminMainnet");
+    await executeSetTimelockAdmin(taskArgs.index, taskArgs.eta);
+  })
+
 task("distributeTokens", "", async () => {
-    const { distributeTokens } = require("./scripts/DistributeTokens");
+    const { distributeTokens } = require("./scripts/DistributeTokensMainnet");
     await distributeTokens();
   })
 
@@ -91,6 +115,15 @@ module.exports = {
         initialIndex: 0,
         count: 10,
         gasPrice: 5000000000, // 5 gwei
+      }
+    },
+    mainnet: {
+      url: `https://mainnet.infura.io/v3/${Secrets.infuraProjectId}`,
+      accounts: {
+        mnemonic: Secrets.mnemonic,
+        initialIndex: 0,
+        count: 10,
+        gasPrice: 5000000000, // FIXME
       }
     }
   },

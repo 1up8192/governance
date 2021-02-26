@@ -226,6 +226,14 @@ contract Timelock {
         emit NewPendingAdmin(pendingAdmin);
     }
 
+    // FIXME for testing, and because I dont understand how the original should work
+    function setPendingAdmin2(address pendingAdmin_) public {
+        require(msg.sender == admin, "Timelock::setPendingAdmin: Call must come from admin.");
+        pendingAdmin = pendingAdmin_;
+
+        emit NewPendingAdmin(pendingAdmin);
+    }
+
     function queueTransaction(address target, uint value, string memory signature, bytes memory data, uint eta) public returns (bytes32) {
         require(msg.sender == admin, "Timelock::queueTransaction: Call must come from admin.");
         require(eta >= getBlockTimestamp().add(delay), "Timelock::queueTransaction: Estimated execution block must satisfy delay.");
