@@ -1,6 +1,7 @@
 const hre = require("hardhat");
 const ethers = hre.ethers;
 const saveAddress = require('./utils/SaveContractAddress');
+const waitSeconds = require('./utils/Wait');
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000"
 
 async function main() {
@@ -20,6 +21,11 @@ async function main() {
 
     let tx = await proxyFactoryWithSigner0.createProxy(masterCopy.address, 0, { gasLimit: 200000 });
     await tx.wait();
+
+    const networkId = (await ethers.provider.getNetwork()).chainId;
+    if (networkId != 1337) {
+        await waitSeconds(10);
+    }
     const events = await proxyFactory.queryFilter("ProxyCreation");
     const safeProxy = events[events.length - 1].args.proxy;
 
@@ -33,8 +39,8 @@ async function main() {
     const contractAddresses = require("../ContractAddresses.json");
 
     await safeWithSigner0.setup(
-        [contractAddresses.Timelock], // _owners List of Safe owners
-        1, // _threshold Number of required confirmations for a Safe transaction.
+        [contractAddresses.Timelock, accounts[0].address, accounts[1].address], // _owners List of Safe owners
+        2, // _threshold Number of required confirmations for a Safe transaction.
         ZERO_ADDRESS, // to Contract address for optional delegate call
         0, // data Data payload for optional delegate call
         ZERO_ADDRESS, // fallbackHandler Handler for fallback calls to this contract
