@@ -5,6 +5,8 @@
 ### deploy-mainnet task
 
 optional parameter --index: account index of the mnemonic to be used for the deplyoer account, default is 0
+
+
 4 scripts in task:
 #### DeployMainnet: governance system contract deplyoments
 - deploys token with the deplyoer address set as the token recipient
