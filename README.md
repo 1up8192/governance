@@ -57,6 +57,7 @@ steps on ropsten/goerli
 steps on mainnet
 - have all parameters correctly set up  delay, safe owner, safe signer, token receivers, all contract parameters in here: https://docs.google.com/spreadsheets/d/1vNLjU2kZ643kDfYi3Db1PVpxVWzt_wAHxd2kc9N_qes/edit#gid=0
 - have .env setup with your mnemonic and infura id
+- set up correct mainnet gasPrice in hardhat.config.js
 - `npx hardhat deploy-mainnet --network mainnet`
 - wait for delay (was originally 2 days)
 - `npx hardhat execute-set-timelock-admin --eta <eta timestamp from deploy output> --network mainnet`
