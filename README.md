@@ -5,6 +5,8 @@
 ### deploy-mainnet task
 
 optional parameter --index: account index of the mnemonic to be used for the deplyoer account, default is 0
+
+
 4 scripts in task:
 #### DeployMainnet: governance system contract deplyoments
 - deploys token with the deplyoer address set as the token recipient
@@ -48,13 +50,14 @@ steps on ganache
 
 steps on ropsten/goerli
 - have .env setup with your mnemonic and infura id
-- `npx hardhat deploy-mainnet --network <sten/goerli>`
+- `npx hardhat deploy-mainnet --network <ropsten/goerli>`
 - wait for delay (default 60 seconds)
-- `npx hardhat execute-set-timelock-admin --eta <eta timestamp from deploy output> --network <sten/goerli>`
+- `npx hardhat execute-set-timelock-admin --eta <eta timestamp from deploy output> --network <ropsten/goerli>`
 
 steps on mainnet
 - have all parameters correctly set up  delay, safe owner, safe signer, token receivers, all contract parameters in here: https://docs.google.com/spreadsheets/d/1vNLjU2kZ643kDfYi3Db1PVpxVWzt_wAHxd2kc9N_qes/edit#gid=0
 - have .env setup with your mnemonic and infura id
+- set up correct mainnet gasPrice in hardhat.config.js
 - `npx hardhat deploy-mainnet --network mainnet`
 - wait for delay (was originally 2 days)
 - `npx hardhat execute-set-timelock-admin --eta <eta timestamp from deploy output> --network mainnet`
