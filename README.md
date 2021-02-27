@@ -38,26 +38,29 @@ Safe deplyoment can excluded from the process by simply disabling the script and
 - Eta parameter has to be supplied with --eta to be able to find the same tx that was queued
 - has to be executed delay time later
 
-### How to:
+### How to deploy:
 
-step 0: checkout the mainnet branch
+preliminary steps
+- clone this repo
+- checkout the mainnet branch
+- `yarn/npm install`
 
 steps on ganache
 - start ganache
-- have .env setup with your mnemonic
+- have .env file setup with your mnemonic, see .env.dist for reference
 - `npx hardhat deploy-mainnet`
 - wait for delay (default 60 seconds)
 - `npx hardhat execute-set-timelock-admin --eta <eta timestamp from deploy output>`
 
 steps on ropsten/goerli
-- have .env setup with your mnemonic and infura id
+- have .env file setup with your mnemonic, see .env.dist for reference
 - `npx hardhat deploy-mainnet --network <ropsten/goerli>`
 - wait for delay (default 60 seconds)
 - `npx hardhat execute-set-timelock-admin --eta <eta timestamp from deploy output> --network <ropsten/goerli>`
 
 steps on mainnet
 - have all parameters correctly set up  delay, safe owner, safe signer, token receivers, all contract parameters in here: https://docs.google.com/spreadsheets/d/1vNLjU2kZ643kDfYi3Db1PVpxVWzt_wAHxd2kc9N_qes/edit#gid=0
-- have .env setup with your mnemonic and infura id
+- have .env file setup with your mnemonic, see .env.dist for reference
 - set up correct mainnet gasPrice in hardhat.config.js
 - `npx hardhat deploy-mainnet --network mainnet`
 - wait for delay (was originally 2 days)

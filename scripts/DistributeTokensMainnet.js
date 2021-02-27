@@ -24,17 +24,11 @@ async function main(accountIndex) {
 
   //some tranfers are needed to external accounts to have external account voters in the governance system
 
-  tx = await usfWithSigner0.transfer(addresses[1], ethers.utils.parseEther("350000"), { gasLimit: 150000 });
-  await tx.wait();
-
-  tx = await usfWithSigner0.transfer(addresses[2], ethers.utils.parseEther("50000"), { gasLimit: 150000 });
-  await tx.wait();
-
-  tx = await usfWithSigner0.transfer(addresses[3], ethers.utils.parseEther("200000"), { gasLimit: 150000 });
+  tx = await usfWithSigner0.transfer(addresses[1], ethers.utils.parseEther("2100000"), { gasLimit: 150000 }); //set aside for the liquidity miners
   await tx.wait();
 
   const ownerBalace = await usf.balanceOf(addresses[accountIndex]);
-  tx = await usfWithSigner0.transfer(contractAddresses.GnosisSafe, ownerBalace, { gasLimit: 150000 });
+  tx = await usfWithSigner0.transfer(contractAddresses.GnosisSafe, ownerBalace.sub(123/*TODO calculate deployer compensation */), { gasLimit: 150000 });
   await tx.wait();
   
   console.log(`gnosis safe balance: ${await usf.balanceOf(contractAddresses.GnosisSafe)}`)
