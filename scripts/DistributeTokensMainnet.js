@@ -2,9 +2,12 @@
 const hre = require("hardhat");
 const ethers = hre.ethers;
 const web3 = hre.web3;
-const contractAddresses = require("../ContractAddresses.json");
 const BigNumber = ethers.BigNumber;
 const { days, advanceTime, advanceBlock, advanceTimeAndBlock } = require('./utils/TimeTravel');
+//const contractAddresses = require("../ContractAddresses.json"); for some reason if I use require here, the gnosis address is not there yet...
+const fs = require("fs");
+const contractAddresses = JSON.parse(fs.readFileSync("./ContractAddresses.json"));
+
 
 async function main(accountIndex) {
 

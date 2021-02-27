@@ -1,6 +1,6 @@
 const hre = require("hardhat");
 const ethers = hre.ethers;
-const saveAddress = require('./utils/SaveContractAddress');
+const { saveContractAddress } = require('./utils/SaveContractAddress');
 const waitSeconds = require('./utils/Wait');
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000"
 
@@ -33,8 +33,8 @@ async function main(accountIndex) {
     const events = await proxyFactory.queryFilter("ProxyCreation");
     const safeProxy = events[events.length - 1].args.proxy;
 
-    saveAddress("GnosisSafeMasterCopy", masterCopy.address);
-    saveAddress("GnosisSafe", safeProxy);
+    await saveContractAddress("GnosisSafeMasterCopy", masterCopy.address);
+    await saveContractAddress("GnosisSafe", safeProxy);
 
     const safe = await ethers.getContractAt("GnosisSafe", safeProxy);
 

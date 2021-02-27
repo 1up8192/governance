@@ -3,6 +3,7 @@ require("@nomiclabs/hardhat-ethers");
 require("@nomiclabs/hardhat-truffle5");
 require("@nomiclabs/hardhat-web3");
 require('dotenv').config();
+const waitSeconds = require('./scripts/utils/Wait');
 
 const Secrets = {
   mnemonic: process.env.MNEMONIC,
@@ -44,7 +45,7 @@ task("deploy", "Deploys a COMPound style governance system")
     const { setTimelockAdmin } = require("./scripts/SetTimelockAdmin");
     await setTimelockAdmin();
     console.log("=== TOKEN DISTRIBUTION ===")
-    const { distributeTokens } = require("./scripts/DistributeTokensMainnet");
+    const { distributeTokens } = require("./scripts/DistributeTokens");
     await distributeTokens();
 
   })

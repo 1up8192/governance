@@ -2,21 +2,23 @@
 const hre = require("hardhat");
 const ethers = hre.ethers;
 const { days, advanceTime, advanceBlock, advanceTimeAndBlock } = require('./utils/TimeTravel');
-const saveAddress = require('./utils/SaveContractAddress');
+const { saveContractAddress, clearContractAddress} = require('./utils/SaveContractAddress');
 
 async function main(accountIndex) {
 
     // Compile our Contracts, just in case
     await hre.run('compile');
 
-    const accounts = await ethers.getSigners();
+    await clearContractAddress();
 
-    console.log("accountIndex: ", accountIndex);
+    const accounts = await ethers.getSigners();
 
     if (accountIndex == null) {
         accountIndex = 0;
     }
-
+    
+    console.log("accountIndex: ", accountIndex);
+    
     const tokenRecipient = accounts[accountIndex].address;
     const timeLockAdmin = accounts[accountIndex].address;
     const guardian = accounts[accountIndex].address;
@@ -28,7 +30,7 @@ async function main(accountIndex) {
     const token = await Token.deploy(tokenRecipient);
     await token.deployed();
     await token.deployTransaction.wait();
-    saveAddress("USF", token.address)
+    await saveContractAddress("USF", token.address)
 
     // Deploy Timelock
     const networkId = (await ethers.provider.getNetwork()).chainId;
@@ -37,21 +39,21 @@ async function main(accountIndex) {
     const timelock = await Timelock.deploy(timeLockAdmin, delay);
     await timelock.deployed();
     await timelock.deployTransaction.wait();
-    saveAddress("Timelock", timelock.address)
+    await saveContractAddress("Timelock", timelock.address)
 
     // Deploy Governance
     const Gov = await ethers.getContractFactory("GovernorAlpha");
     const gov = await Gov.deploy(timelock.address, token.address, guardian);
     await gov.deployed();
     await gov.deployTransaction.wait();
-    saveAddress("GovernorAlpha", gov.address)
+    await saveContractAddress("GovernorAlpha", gov.address)
 
     // Deploy Governable
     const Govable = await ethers.getContractFactory("Governable");
     const govable = await Govable.deploy(timelock.address);
     await govable.deployed();
     await govable.deployTransaction.wait();
-    saveAddress("Governable", govable.address)
+    await saveContractAddress("Governable", govable.address)
 
 
     console.log(`Token deployed to: ${token.address}`);
