@@ -3,7 +3,7 @@ pragma experimental ABIEncoderV2;
 
 contract USF {
     /// @notice EIP-20 token name for this token
-    string public constant name = "UnslashedFinanceToken";
+    string public constant name = "Unslashed Finance Governance Token";
 
     /// @notice EIP-20 token symbol for this token
     string public constant symbol = "USF";
@@ -12,7 +12,7 @@ contract USF {
     uint8 public constant decimals = 18;
 
     /// @notice Total number of tokens in circulation
-    uint public constant totalSupply = 10000000e18; // 10 million USF
+    uint public constant totalSupply = 86000000e18; // 86 million USF
 
     /// @notice Allowance amounts on behalf of others
     mapping (address => mapping (address => uint96)) internal allowances;
