@@ -42,8 +42,10 @@ async function main(accountIndex) {
 
     const contractAddresses = require("../ContractAddresses.json");
 
+    adminAddress = "0x0000000000000000000000000000000000000002"; //TODO real address  
+
     await safeWithSigner0.setup(
-        [contractAddresses.Timelock, accounts[accountIndex].address], // _owners List of Safe owners TODO: verify what external account should be used here deplyoer or different
+        [contractAddresses.Timelock, adminAddress], // _owners List of Safe owners TODO: verify what external account should be used here deplyoer or different
         2, // _threshold Number of required confirmations for a Safe transaction.
         ZERO_ADDRESS, // to Contract address for optional delegate call
         0, // data Data payload for optional delegate call

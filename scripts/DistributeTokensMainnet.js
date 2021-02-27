@@ -20,24 +20,41 @@ async function main(accountIndex) {
 
   const usf = await ethers.getContractAt("USF", contractAddresses.USF);
   const usfWithSigner0 = usf.connect(accounts[accountIndex]);
+  
+  deployersAmount = 123; /*TODO calculate deployer compensation */
+
+  liquidityMinersAddress = "0x0000000000000000000000000000000000000001"; //TODO real address  
+  liquidityMinersAmount = ethers.utils.parseEther("2700000"); //2.7 M
+
+  gnosisSafeAmount = ethers.utils.parseEther("40300000"); //40.3 M = 43 M - 2.7 M
+
+  teamAndInvestorsAddress = "0x0000000000000000000000000000000000000002"; //TODO real address  
+  
   let tx;
-
-  //some tranfers are needed to external accounts to have external account voters in the governance system
-
-  tx = await usfWithSigner0.transfer(addresses[1], ethers.utils.parseEther("2100000"), { gasLimit: 150000 }); //set aside for the liquidity miners
+  tx = await usfWithSigner0.transfer(liquidityMinersAddress, liquidityMinersAmount, { gasLimit: 150000 });
   await tx.wait();
 
-  const ownerBalace = await usf.balanceOf(addresses[accountIndex]);
-  tx = await usfWithSigner0.transfer(contractAddresses.GnosisSafe, ownerBalace.sub(123/*TODO calculate deployer compensation */), { gasLimit: 150000 });
+  tx = await usfWithSigner0.transfer(contractAddresses.GnosisSafe, gnosisSafeAmount, { gasLimit: 150000 });
   await tx.wait();
   
+  const deployersRemainingBalace = await usf.balanceOf(addresses[accountIndex]);
+
+  teamAndInvestorsAmount = deployersRemainingBalace.sub(deployersAmount); //rest except deplyoers amount
+  tx = await usfWithSigner0.transfer(teamAndInvestorsAddress, teamAndInvestorsAmount, { gasLimit: 150000 });
+  await tx.wait();
+  
+  console.log(`liquidity miner's address: ${liquidityMinersAddress}`)
+  console.log(`liquidity miner's address: ${await usf.balanceOf(liquidityMinersAddress)}`)
+
+  console.log(`gnosis safe address: ${contractAddresses.GnosisSafe}`)
   console.log(`gnosis safe balance: ${await usf.balanceOf(contractAddresses.GnosisSafe)}`)
-  console.log(`gnosis address: ${contractAddresses.GnosisSafe}`)
-  let index = 0;
-  for await (let balance of addresses.map(async address => usf.balanceOf(address))) {
-    console.log(`account ${index} balance: ${balance}`)
-    index++;
-  }
+
+  console.log(`deplyoer's address: ${addresses[accountIndex]}`)
+  console.log(`deplyoer's balance: ${await usf.balanceOf(addresses[accountIndex])}`)
+  
+  console.log(`team and investor's address: ${teamAndInvestorsAddress}`)
+  console.log(`team and investor's balance: ${await usf.balanceOf(teamAndInvestorsAddress)}`)
+
 
 }
 
